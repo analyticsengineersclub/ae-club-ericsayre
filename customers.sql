@@ -1,10 +1,20 @@
+with 
+order_agg as
+(
+    select
+      customer_id
+    , min(created_at) first_order_at
+    , count(id) number_of_orders
+    from `analytics-engineers-club.coffee_shop.orders` ord
+    group by 1
+)
+
 select
-cust.id customer_id
-,cust.name
-,cust.email
-,min(ord.created_at) first_order_at
-,count(ord.id) number_of_orders
+  cust.id customer_id
+, cust.name
+, cust.email
+, first_order_at
+, number_of_orders
 from `analytics-engineers-club.coffee_shop.customers` cust
-left join `analytics-engineers-club.coffee_shop.orders` ord
-on cust.id = ord.customer_id
-group by 1,2,3
+left join order_agg
+on cust.id = order_agg.customer_id
